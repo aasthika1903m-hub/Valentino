@@ -11,15 +11,14 @@
         #quiz-container { background: rgba(255, 255, 255, 0.95); padding: 2.5rem; border-radius: 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); max-width: 400px; width: 85%; text-align: center; z-index: 10; border: 2px solid white; }
         .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; margin: 8px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .btn:hover { transform: scale(1.05); }
-        input[type="text"] { padding: 12px; width: 80%; border: 2px solid #ffccd5; border-radius: 12px; margin-bottom: 10px; text-align: center; }
-        /* Pop-up Overlay */
-        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: none; z-index: 99; }
-        #popup-note { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 100; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 3px solid var(--primary); text-align: center; width: 75%; }
+        input[type="text"] { padding: 12px; width: 80%; border: 2px solid #ffccd5; border-radius: 12px; margin-bottom: 10px; text-align: center; font-size: 1rem; }
+        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 99; }
+        #popup-note { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 100; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 3px solid var(--primary); text-align: center; width: 75%; font-weight: 500; }
         #popup-note.show { transform: translate(-50%, -50%) scale(1); }
         .hidden { display: none; }
         .floating-heart { position: absolute; bottom: -50px; color: var(--primary); animation: float-up 4s linear forwards; }
         @keyframes float-up { to { transform: translateY(-110vh) rotate(360deg); opacity: 0; } }
-        #final-msg { font-style: italic; font-weight: 600; color: #444; min-height: 80px; line-height: 1.5; }
+        #final-msg { font-style: italic; font-weight: 600; color: #444; min-height: 80px; line-height: 1.6; }
     </style>
 </head>
 <body onclick="hidePopup()">
@@ -33,23 +32,53 @@
             <button class="btn" onclick="startQuiz()">Start Challenge</button>
         </div>
         <div id="question-box" class="hidden">
-            <h2 id="question-text"></h2>
+            <h2 id="question-text" style="color: #c9184a;"></h2>
             <div id="options-container"></div>
         </div>
         <div id="final-screen" class="hidden">
-            <h2 style="animation: heartbeat 1.2s infinite;">Happy Valentine's Day!</h2>
+            <h2 style="color: #ff4d6d; margin-bottom: 10px;">Happy Valentine's Day!</h2>
             <p id="final-msg"></p>
-            <div id="final-emojis" style="font-size: 2.5rem; margin-top: 15px;"></div>
+            <div id="final-emojis" style="font-size: 2.8rem; margin-top: 15px;"></div>
         </div>
     </div>
 
 <script>
     const questions = [
-        { q: "The proposal date?", options: ["Oct 7", "Oct 8", "Oct 9", "Oct 10"], answer: "Oct 8", wrong: (c) => c === "Oct 9" ? "Are you serious? One day off is still WRONG." : "Nope! Try again.", right: "Close call! You live to see another day. ❤️ (Tap to continue)" },
-        { q: "Our first date?", options: ["Movie night", "Dinner date", "Night street walking", "Coffee shop"], answer: "Night street walking", wrong: () => "Incorrect! It's like you weren't even there!", right: "Simple and perfect. ✨ (Tap to continue)" },
-        { q: "What's special in the number 207?", type: "input", answer: "207", wrong: () => "Nope. Think harder. It’s a place we’ll never forget!", right: "Correct. Our own little world. 🏠 (Tap to continue)" },
-        { q: "The destination in our bucket list?", options: ["Munnar", "Ooty", "Goa", "Manali"], answer: "Ooty", wrong: () => "In your dreams! That's not where we're going.", right: "Spot on! Ooty it is. ☕ (Tap to continue)" },
-        { q: "Will you be my valentine?", options: ["Yes", "No"], answer: "Yes", wrong: () => "Nice try! Error 404: You are mine. Click the other button! 😤", right: "The only correct answer! 😉 (Tap to continue)" }
+        { 
+            q: "The proposal date?", 
+            options: ["Oct 7", "Oct 8", "Oct 9", "Oct 10"], 
+            answer: "Oct 8", 
+            wrong: (choice) => choice === "Oct 9" ? "Are you serious right now? One day off is still WRONG. Do better." : "Oct 9?! Seriously? You’re lucky I don’t revoke the 'Yes' right now. Try again.", 
+            right: "Close call. You live to see another day. That day changed everything." 
+        },
+        { 
+            q: "Our first date", 
+            options: ["Movie night", "Dinner date", "Night street walking", "Coffee shop"], 
+            answer: "Night street walking", 
+            wrong: () => "Incorrect! It's like you weren't even there. Try again!", 
+            right: "Simple, quiet, and perfect. Better than any fancy dinner." 
+        },
+        { 
+            q: "What's special in the number 207?", 
+            type: "input", 
+            keywords: ["room", "park avenue", "park avenue room"], 
+            wrong: () => "Nope. Think harder. It’s a place we’ll never forget!", 
+            right: "Correct. It was just our own little world for a while. I still think about it." 
+        },
+        { 
+            q: "The destination in our bucket list?", 
+            options: ["Munnar", "Ooty", "Goa", "Manali"], 
+            answer: "Ooty", 
+            wrong: () => "In your dreams! That's not where we're going. Try again.", 
+            right: "Spot on. Can't wait for the mist, the tea, and us finally being there." 
+        },
+        { 
+            q: "Will you be my valentine?", 
+            options: ["Yes", "No"], 
+            answer: "Yes", 
+            wrong: () => "Nice try! Error 404, you are mine and you are being my valentine I'm not asking, i am telling click the other button.", 
+            right: "The only correct answer! I knew you'd make the right choice. 😉" 
+        }
     ];
 
     let currentIdx = 0;
@@ -58,7 +87,7 @@
     function showPopup(text, isError) {
         const p = document.getElementById('popup-note');
         const ov = document.getElementById('overlay');
-        p.innerText = text;
+        p.innerText = text + "\n\n(Tap to continue)";
         p.style.borderColor = isError ? "#c9184a" : "#2d6a4f";
         p.classList.add('show');
         ov.style.display = 'block';
@@ -81,9 +110,15 @@
         const qText = document.getElementById('question-text'); const optBox = document.getElementById('options-container'); const current = questions[currentIdx];
         qText.innerText = current.q; optBox.innerHTML = '';
         if (current.type === "input") {
-            const input = document.createElement('input'); input.type = 'text'; input.id = 'ans'; input.placeholder = "Type here...";
+            const input = document.createElement('input'); input.type = 'text'; input.id = 'ans'; input.placeholder = "Type your answer...";
             const b = document.createElement('button'); b.innerText = 'Submit'; b.className = 'btn';
-            b.onclick = (e) => { e.stopPropagation(); if(document.getElementById('ans').value.includes('207')) { showPopup(current.right, false); confetti(); } else { showPopup(current.wrong(), true); } };
+            b.onclick = (e) => { 
+                e.stopPropagation(); 
+                const val = document.getElementById('ans').value.toLowerCase();
+                const matched = current.keywords.some(k => val.includes(k));
+                if(matched) { showPopup(current.right, false); confetti(); } 
+                else { showPopup(current.wrong(), true); } 
+            };
             optBox.append(input, b);
         } else {
             current.options.forEach(opt => {
@@ -104,7 +139,7 @@
             if(i < msg.length) { 
                 document.getElementById('final-msg').innerHTML += msg.charAt(i); 
                 i++; 
-                setTimeout(type, 35); // Speed increased from 50 to 35
+                setTimeout(type, 30); 
             } else {
                 document.getElementById('final-emojis').innerHTML = "🌹🫂👩‍❤️‍💋‍👨";
             }
