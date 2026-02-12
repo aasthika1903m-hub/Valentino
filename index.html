@@ -3,277 +3,248 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Surprise for You!</title>
+    <title>A Surprise for You ❤️</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
         :root {
-            --bg-color: #ffafbd;
-            --text-color: #ffffff;
+            --primary: #e63946;
+            --bg: linear-gradient(135deg, #ffe5ec 0%, #ffc2d1 100%);
+            --gold: #d4af37;
         }
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-color);
-            transition: background 0.5s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
             overflow: hidden;
-            text-align: center;
+            display: flex; align-items: center; justify-content: center;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 30px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            max-width: 90%;
-            width: 400px;
+            width: 90%; max-width: 400px; text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative; transition: all 0.5s ease;
         }
 
-        h1 { font-size: 24px; margin-bottom: 20px; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .hidden { display: none !important; }
+
+        /* Step 1 & 2 Styles */
+        h1 { font-size: 1.5rem; color: #444; }
+        .script-font { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--gold); }
         
-        .cat-img { width: 200px; height: 200px; object-fit: contain; margin-bottom: 20px; border-radius: 15px; }
-
-        .btn {
-            background: white;
-            color: #ff4b2b;
-            border: none;
-            padding: 12px 25px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 25px;
-            cursor: pointer;
+        button {
+            padding: 12px 25px; border: none; border-radius: 50px;
+            cursor: pointer; font-weight: 600; transition: transform 0.2s;
             margin: 10px;
-            transition: transform 0.2s;
         }
 
-        .btn:hover { transform: scale(1.1); }
+        .btn-yes { background: var(--primary); color: white; }
+        .btn-no { background: #ccc; color: #555; }
 
         /* Shake Animation */
+        .shake { animation: shake 0.3s; }
         @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
 
-        .shake { animation: shake 0.5s; animation-iteration-count: infinite; }
+        /* Photo Styles */
+        .profile-img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--gold); margin-bottom: 20px; }
+        
+        /* Quiz Styles */
+        .quiz-input { width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; }
 
-        /* Running No Button */
-        #no-btn-final { position: absolute; transition: 0.2s; }
+        /* Fleeing Button */
+        #flee-no { position: absolute; }
 
-        /* Photo Slider */
-        #photo-gallery { display: none; }
-        .slideshow-container { width: 100%; height: 250px; position: relative; }
-        .slide { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; display: none; }
+        /* Gift Box */
+        .gift-box { font-size: 80px; cursor: pointer; display: block; margin: 20px auto; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
-        /* Maxwell Spin */
-        .maxwell { width: 150px; animation: spin 2s linear infinite; display: none; margin: 20px auto; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        /* Flash Effect */
+        #flash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; opacity: 0; pointer-events: none; z-index: 1000;
+        }
 
-        .hidden { display: none; }
+        /* Gallery Scroll */
+        #scroll-container { 
+            height: 100vh; overflow-y: auto; width: 100%; display: flex; flex-direction: column; align-items: center; 
+            padding-top: 50px; background: #fff5f7;
+        }
+        .gallery-img { width: 85%; max-width: 300px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .final-msg { font-family: 'Dancing Script', cursive; font-size: 3rem; color: var(--primary); padding: 50px 0; }
     </style>
 </head>
 <body>
 
-    <div class="container" id="main-card">
-        <div id="intro-screen">
-            <img id="intro-cat" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHYybmN6cXN6bmF5bHdqZ3p3eHh6cXN6bmF5bHdqZ3p3eHh6cXN6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZNo/lJNoBCvQYp7nq/giphy.gif" class="cat-img">
-            <h1 id="intro-text">I made a surprise for you, can you see it?</h1>
-            <button class="btn" onclick="goToHeHe()">Yes</button>
-            <button class="btn" id="intro-no" onclick="triggerAngry()">No</button>
-        </div>
+    <div id="flash"></div>
 
-        <div id="hehe-screen" class="hidden">
-            <h1>He he he...</h1>
-            <p style="color: white;">Click below for the surprise</p>
-            <button class="btn" onclick="goToHandsome()">Next</button>
-        </div>
+    <div id="step1" class="container">
+        <h1>I made a surprise for you, can you see it?</h1>
+        <button class="btn-yes" onclick="nextStep(2)">Yes</button>
+        <button class="btn-no" onclick="howDareYou(this)">No</button>
+        <p id="dare-msg" style="color:red; font-weight:bold; display:none;">HOW DARE YOU!</p>
+    </div>
 
-        <div id="handsome-screen" class="hidden">
-            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcm5qbmJ3bXp3eHh6cXN6bmF5bHdqZ3p3eHh6cXN6bmF5bHdqZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oz8xAFtqoNEAf6xW0/giphy.gif" class="cat-img">
-            <h1>Hey Handsome!</h1>
-            <button class="btn" onclick="startQuiz()">Get Started</button>
-        </div>
-
-        <div id="quiz-screen" class="hidden">
-            <h1 id="question-text">Question</h1>
-            <div id="quiz-cat-container"></div>
-            <div id="options-container"></div>
-        </div>
-
-        <div id="proposal-screen" class="hidden">
-            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExenI1bmN6cXN6bmF5bHdqZ3p3eHh6cXN6bmF5bHdqZ3p3eHh6cXN6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/MDJ9IbxxvDUQM/giphy.gif" class="cat-img">
-            <h1>Will you be my Valentine?</h1>
-            <button class="btn" onclick="revealGift()">Yes</button>
-            <button class="btn" id="no-btn-final" onmouseover="moveNo()">No</button>
-        </div>
-
-        <div id="gift-screen" class="hidden">
-            <h1 id="typewriter-msg"></h1>
-            <div id="gift-box" style="font-size: 80px; cursor: pointer;" onclick="showSmileMsg()">🎁</div>
-            <p id="smile-msg" class="hidden">Smileee! Click on the camera to reveal photo!!</p>
-            <div id="camera-btn" class="hidden" style="font-size: 50px; cursor: pointer;" onclick="runPhotos()">📷</div>
-            
-            <div id="photo-gallery">
-                <div class="slideshow-container">
-                    <img src="photo1.jpg" class="slide">
-                    <img src="photo2.jpg" class="slide">
-                    <img src="photo3.jpg" class="slide">
-                </div>
-                <h2 id="love-text" class="hidden" style="color: white; margin-top: 10px;">I LOVE YOU</h2>
-                <div id="rank-display" style="color: white; font-weight: bold; margin-top: 10px;"></div>
-                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3RndjRwamN6cXN6bmF5bHdqZ3p3eHh6cXN6bmF5bHdqZ3p3eHh6cXN6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/GeimqsH0TLDt4tScGw/giphy.gif" class="maxwell" id="maxwell">
-            </div>
+    <div id="step2" class="container hidden">
+        <h1 id="he-he">He he he... click for surprise</h1>
+        <button id="next-btn" class="btn-yes" onclick="showHandsome()">Next</button>
+        
+        <div id="handsome-content" class="hidden">
+            <img src="intro.jpg" class="profile-img" alt="You">
+            <h1 class="script-font">Hey Handsome!</h1>
+            <p id="typewriter"></p>
+            <button class="btn-yes" id="start-quiz-btn" onclick="nextStep(3)" style="display:none;">Get Started</button>
         </div>
     </div>
 
+    <div id="step3" class="container hidden">
+        <h2 id="q-text">When was the proposal date?</h2>
+        <div id="options">
+            </div>
+        <p id="error-msg" style="color:red; font-size: 0.8rem;"></p>
+    </div>
+
+    <div id="step4" class="container hidden">
+        <h1 class="script-font">Will you be my valentine?</h1>
+        <button class="btn-yes" onclick="valCorrect()">Yes</button>
+        <button class="btn-no" id="flee-no" onmouseover="flee()">No</button>
+    </div>
+
+    <div id="step5" class="container hidden" style="overflow-y: auto; max-height: 80vh;">
+        <p id="final-typewriter" style="font-weight: 600;"></p>
+        <div id="gift-area" class="hidden">
+            <div class="gift-box" onclick="cameraFlash()">🎁</div>
+            <p>Tap the gift box</p>
+        </div>
+    </div>
+
+    <div id="scroll-container" class="hidden">
+        <h2 class="script-font">Memories 📸</h2>
+        <img src="gallery1.jpg" class="gallery-img">
+        <img src="gallery2.jpg" class="gallery-img">
+        <img src="gallery3.jpg" class="gallery-img">
+        <img src="final.jpg" class="gallery-img">
+        <div class="final-msg">I LOVE YOU</div>
+    </div>
+
     <script>
-        let score = 0;
-        let currentQ = 0;
-
-        const questions = [
-            { q: "Where I first proposed?", a: ["Park", "Beach", "Home", "Text"], correct: 0, bg: "#ff9a9e" },
-            { q: "Where was our first date?", a: ["Cafe", "Movie", "Park Avenue", "Restaurant"], correct: 2, bg: "#a18cd1" },
-            { q: "What's special about 207?", a: ["Address", "Anniversary", "Lucky Number", "Just a number"], correct: 0, bg: "#fbc2eb" },
-            { q: "What do we love in Ooty?", a: ["Tea", "Coffee", "Chocolate", "Scenery"], correct: 1, bg: "#84fab0" }
-        ];
-
-        function triggerAngry() {
-            document.body.classList.add('shake');
-            document.getElementById('intro-cat').src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHYybmN6cXN6bmF5bHdqZ3p3eHh6cXN6bmF5bHdqZ3p3eHh6cXN6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/mlvseq9nOeYhqcISIl/giphy.gif";
-            document.getElementById('intro-text').innerText = "HOW DARE YOU?! 😤 Try again.";
-            document.getElementById('intro-no').style.display = 'none';
+        function nextStep(step) {
+            document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
+            document.getElementById('step' + step).classList.remove('hidden');
         }
 
-        function goToHeHe() {
-            document.body.classList.remove('shake');
-            document.getElementById('intro-screen').classList.add('hidden');
-            document.getElementById('hehe-screen').classList.remove('hidden');
+        function howDareYou(btn) {
+            document.getElementById('step1').classList.add('shake');
+            document.getElementById('dare-msg').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('step1').classList.remove('shake');
+                document.getElementById('dare-msg').style.display = 'none';
+            }, 1500);
         }
 
-        function goToHandsome() {
-            document.getElementById('hehe-screen').classList.add('hidden');
-            document.getElementById('handsome-screen').classList.remove('hidden');
-        }
-
-        function startQuiz() {
-            document.getElementById('handsome-screen').classList.add('hidden');
-            document.getElementById('quiz-screen').classList.remove('hidden');
-            showQuestion();
-        }
-
-        function showQuestion() {
-            let q = questions[currentQ];
-            document.body.style.background = q.bg;
-            document.getElementById('question-text').innerText = q.q;
-            let options = document.getElementById('options-container');
-            options.innerHTML = '';
-            q.a.forEach((opt, i) => {
-                let btn = document.createElement('button');
-                btn.className = 'btn';
-                btn.innerText = opt;
-                btn.onclick = () => checkAnswer(i);
-                options.appendChild(btn);
+        function showHandsome() {
+            document.getElementById('he-he').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('handsome-content').classList.remove('hidden');
+            typeWriter("Hey Handsome!", "Let's play a little game. If you get these right, there's a surprise waiting.", "typewriter", () => {
+                document.getElementById('start-quiz-btn').style.display = 'inline-block';
             });
         }
 
-        function checkAnswer(i) {
-            if(i === questions[currentQ].correct) {
-                score++;
-                alert("Happy Happy Happy! 🐱✨");
-            } else {
-                alert("Huh? 🐱❓");
-            }
-            currentQ++;
-            if(currentQ < questions.length) { showQuestion(); }
-            else { showProposal(); }
-        }
-
-        function showProposal() {
-            document.getElementById('quiz-screen').classList.add('hidden');
-            document.getElementById('proposal-screen').classList.remove('hidden');
-            document.body.style.background = "#ff4b2b";
-        }
-
-        function moveNo() {
-            let btn = document.getElementById('no-btn-final');
-            btn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
-            btn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
-        }
-
-        function revealGift() {
-            document.getElementById('proposal-screen').classList.add('hidden');
-            document.getElementById('gift-screen').classList.remove('hidden');
-            let text = "You've made me the luckiest person! I have a small surprise... open it!";
+        function typeWriter(title, text, elementId, callback) {
             let i = 0;
             function type() {
-                if(i < text.length) {
-                    document.getElementById('typewriter-msg').innerHTML += text.charAt(i);
-                    i++; setTimeout(type, 50);
-                }
+                if (i < text.length) {
+                    document.getElementById(elementId).innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, 30);
+                } else if (callback) callback();
             }
             type();
         }
 
-        function showSmileMsg() {
-            document.getElementById('gift-box').classList.add('hidden');
-            document.getElementById('smile-msg').classList.remove('hidden');
-            document.getElementById('camera-btn').classList.remove('hidden');
-        }
+        // Quiz Logic
+        let currentQ = 0;
+        const questions = [
+            { q: "The proposal date?", ops: ["Oct 9", "Sept 9", "Oct 10"], ans: "Oct 9" },
+            { q: "Our first date?", ops: ["Movies", "Night street walking", "Dinner"], ans: "Night street walking" },
+            { q: "What's special in 207?", input: true, ans: ["room", "park avenue"] },
+            { q: "Destination on our bucket list?", ops: ["Ooty", "Kerala", "Goa"], ans: "Ooty" }
+        ];
 
-        function runPhotos() {
-            document.getElementById('camera-btn').classList.add('hidden');
-            document.getElementById('photo-gallery').style.display = 'block';
-            let slides = document.getElementsByClassName('slide');
-            let index = 0;
-            let interval = setInterval(() => {
-                for(let s of slides) s.style.display = 'none';
-                if(index < slides.length) {
-                    slides[index].style.display = 'block';
-                    index++;
-                } else {
-                    clearInterval(interval);
-                    document.getElementById('love-text').classList.remove('hidden');
-                    showRank();
-                }
-            }, 2000);
-        }
+        function loadQuiz() {
+            const q = questions[currentQ];
+            document.getElementById('q-text').innerText = q.q;
+            const optDiv = document.getElementById('options');
+            optDiv.innerHTML = '';
+            document.getElementById('error-msg').innerText = '';
 
-        function showRank() {
-            let rank = "";
-            if(score === 4) rank = "RANK: THE ULTIMATE SOULMATE 🏆";
-            else if(score >= 2) rank = "RANK: COFFEE DATE PRO ☕";
-            else rank = "RANK: LUCKY I LOVE YOU 😂";
-            document.getElementById('rank-display').innerText = rank;
-            document.getElementById('maxwell').style.display = 'block';
-            confetti();
-        }
-
-        function confetti() {
-            // Simple emoji explosion
-            for(let i=0; i<20; i++) {
-                let e = document.createElement('div');
-                e.innerText = ['🌹','🫂','👩‍❤️‍💋‍👨'][Math.floor(Math.random()*3)];
-                e.style.position = 'absolute';
-                e.style.left = Math.random()*100 + 'vw';
-                e.style.top = '100vh';
-                e.style.fontSize = '30px';
-                e.style.transition = '2s';
-                document.body.appendChild(e);
-                setTimeout(() => { e.style.top = '-10vh'; e.style.transform = 'rotate(360deg)'; }, 100);
+            if(q.input) {
+                const input = document.createElement('input');
+                input.className = 'quiz-input';
+                input.id = 'quiz-in';
+                const btn = document.createElement('button');
+                btn.innerText = "Submit"; btn.className = 'btn-yes';
+                btn.onclick = () => checkAns(document.getElementById('quiz-in').value);
+                optDiv.appendChild(input); optDiv.appendChild(btn);
+            } else {
+                q.ops.forEach(o => {
+                    const b = document.createElement('button');
+                    b.innerText = o; b.className = 'btn-no';
+                    b.onclick = () => checkAns(o);
+                    optDiv.appendChild(b);
+                });
             }
+        }
+
+        function checkAns(val) {
+            const q = questions[currentQ];
+            let isRight = false;
+            if(q.input) isRight = q.ans.includes(val.toLowerCase());
+            else isRight = (val === q.ans);
+
+            if(isRight) {
+                currentQ++;
+                if(currentQ < questions.length) loadQuiz();
+                else nextStep(4);
+            } else {
+                document.getElementById('error-msg').innerText = (val === "Oct 10") ? "Close! But no." : "Wrong answer! Try again.";
+            }
+        }
+        loadQuiz();
+
+        // Flee Button
+        function flee() {
+            const btn = document.getElementById('flee-no');
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 50);
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
+
+        function valCorrect() {
+            alert("The only correct answer! I knew you'd make the right choice. 😉");
+            nextStep(5);
+            typeWriter("", "I’m glad we’re on the same page. Thanks for being my person and for dealing with my mood swings. Looking forward to Ooty, 207, and everything else we have planned. Happy Valentine's Day, favorite. 🌹🫂👩‍❤️‍💋‍👨", "final-typewriter", () => {
+                document.getElementById('gift-area').classList.remove('hidden');
+            });
+        }
+
+        function cameraFlash() {
+            const f = document.getElementById('flash');
+            f.style.opacity = '1';
+            setTimeout(() => {
+                f.style.opacity = '0';
+                document.getElementById('step5').classList.add('hidden');
+                document.getElementById('scroll-container').classList.remove('hidden');
+                document.body.style.overflow = 'auto';
+            }, 200);
         }
     </script>
 </body>
