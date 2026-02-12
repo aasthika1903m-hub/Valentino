@@ -3,151 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine's Challenge ❤️</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <title>A Surprise for You!</title>
     <style>
-        :root { --primary: #ff4d6d; --bg: #fff0f3; }
-        body { background: linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%); font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
-        #quiz-container { background: rgba(255, 255, 255, 0.95); padding: 2.5rem; border-radius: 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); max-width: 400px; width: 85%; text-align: center; z-index: 10; border: 2px solid white; }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; margin: 8px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .btn:hover { transform: scale(1.05); }
-        input[type="text"] { padding: 12px; width: 80%; border: 2px solid #ffccd5; border-radius: 12px; margin-bottom: 10px; text-align: center; font-size: 1rem; }
-        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 99; }
-        #popup-note { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 100; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 3px solid var(--primary); text-align: center; width: 75%; font-weight: 500; }
-        #popup-note.show { transform: translate(-50%, -50%) scale(1); }
+        :root {
+            --bg-color: #ffafbd;
+            --text-color: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            transition: background 0.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            max-width: 90%;
+            width: 400px;
+        }
+
+        h1 { font-size: 24px; margin-bottom: 20px; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        
+        .cat-img { width: 200px; height: 200px; object-fit: contain; margin-bottom: 20px; border-radius: 15px; }
+
+        .btn {
+            background: white;
+            color: #ff4b2b;
+            border: none;
+            padding: 12px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover { transform: scale(1.1); }
+
+        /* Shake Animation */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        .shake { animation: shake 0.5s; animation-iteration-count: infinite; }
+
+        /* Running No Button */
+        #no-btn-final { position: absolute; transition: 0.2s; }
+
+        /* Photo Slider */
+        #photo-gallery { display: none; }
+        .slideshow-container { width: 100%; height: 250px; position: relative; }
+        .slide { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; display: none; }
+
+        /* Maxwell Spin */
+        .maxwell { width: 150px; animation: spin 2s linear infinite; display: none; margin: 20px auto; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
         .hidden { display: none; }
-        .floating-heart { position: absolute; bottom: -50px; color: var(--primary); animation: float-up 4s linear forwards; }
-        @keyframes float-up { to { transform: translateY(-110vh) rotate(360deg); opacity: 0; } }
-        #final-msg { font-style: italic; font-weight: 600; color: #444; min-height: 80px; line-height: 1.6; }
     </style>
 </head>
-<body onclick="hidePopup()">
-    <div id="overlay"></div>
-    <div id="popup-note"></div>
+<body>
 
-    <div id="quiz-container" onclick="event.stopPropagation()">
+    <div class="container" id="main-card">
         <div id="intro-screen">
-            <h2>Hey Handsome! ❤️</h2>
-            <p>Think you know us? Prove it. 5 questions stand between you and your message.</p>
-            <button class="btn" onclick="startQuiz()">Start Challenge</button>
+            <img id="intro-cat" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHYybmN6cXN6bmF5bHdqZ3p3eHh6cXN6bmF5bHdqZ3p3eHh6cXN6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZNo/lJNoBCvQYp7nq/giphy.gif" class="cat-img">
+            <h1 id="intro-text">I made a surprise for you, can you see it?</h1>
+            <button class="btn" onclick="goToHeHe()">Yes</button>
+            <button class="btn" id="intro-no" onclick="triggerAngry()">No</button>
         </div>
-        <div id="question-box" class="hidden">
-            <h2 id="question-text" style="color: #c9184a;"></h2>
+
+        <div id="hehe-screen" class="hidden">
+            <h1>He he he...</h1>
+            <p style="color: white;">Click below for the surprise</p>
+            <button class="btn" onclick="goToHandsome()">Next</button>
+        </div>
+
+        <div id="handsome-screen" class="hidden">
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcm5qbmJ3bXp3eHh6cXN6bmF5bHdqZ3p3eHh6cXN6bmF5bHdqZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oz8xAFtqoNEAf6xW0/giphy.gif" class="cat-img">
+            <h1>Hey Handsome!</h1>
+            <button class="btn" onclick="startQuiz()">Get Started</button>
+        </div>
+
+        <div id="quiz-screen" class="hidden">
+            <h1 id="question-text">Question</h1>
+            <div id="quiz-cat-container"></div>
             <div id="options-container"></div>
         </div>
-        <div id="final-screen" class="hidden">
-            <h2 style="color: #ff4d6d; margin-bottom: 10px;">Happy Valentine's Day!</h2>
-            <p id="final-msg"></p>
-            <div id="final-emojis" style="font-size: 2.8rem; margin-top: 15px;"></div>
+
+        <div id="proposal-screen" class="hidden">
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExenI1bmN6cXN6bmF5bHdqZ3p3eHh6cXN6bmF5bHdqZ3p3eHh6cXN6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/MDJ9IbxxvDUQM/giphy.gif" class="cat-img">
+            <h1>Will you be my Valentine?</h1>
+            <button class="btn" onclick="revealGift()">Yes</button>
+            <button class="btn" id="no-btn-final" onmouseover="moveNo()">No</button>
+        </div>
+
+        <div id="gift-screen" class="hidden">
+            <h1 id="typewriter-msg"></h1>
+            <div id="gift-box" style="font-size: 80px; cursor: pointer;" onclick="showSmileMsg()">🎁</div>
+            <p id="smile-msg" class="hidden">Smileee! Click on the camera to reveal photo!!</p>
+            <div id="camera-btn" class="hidden" style="font-size: 50px; cursor: pointer;" onclick="runPhotos()">📷</div>
+            
+            <div id="photo-gallery">
+                <div class="slideshow-container">
+                    <img src="photo1.jpg" class="slide">
+                    <img src="photo2.jpg" class="slide">
+                    <img src="photo3.jpg" class="slide">
+                </div>
+                <h2 id="love-text" class="hidden" style="color: white; margin-top: 10px;">I LOVE YOU</h2>
+                <div id="rank-display" style="color: white; font-weight: bold; margin-top: 10px;"></div>
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3RndjRwamN6cXN6bmF5bHdqZ3p3eHh6cXN6bmF5bHdqZ3p3eHh6cXN6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/GeimqsH0TLDt4tScGw/giphy.gif" class="maxwell" id="maxwell">
+            </div>
         </div>
     </div>
 
-<script>
-    const questions = [
-        { 
-            q: "The proposal date?", 
-            options: ["Oct 7", "Oct 8", "Oct 9", "Oct 10"], 
-            answer: "Oct 8", 
-            wrong: (choice) => choice === "Oct 9" ? "Are you serious right now? One day off is still WRONG. Do better." : "Seriously? You’re lucky I don’t revoke the 'Yes' right now. Try again.", 
-            right: "Close call. You live to see another day. That day changed everything." 
-        },
-        { 
-            q: "Our first date", 
-            options: ["Movie night", "Dinner date", "Night street walking", "Coffee shop"], 
-            answer: "Night street walking", 
-            wrong: () => "Incorrect! It's like you weren't even there. Try again!", 
-            right: "Simple, quiet, and perfect. Better than any fancy dinner." 
-        },
-        { 
-            q: "What's special in the number 207?", 
-            type: "input", 
-            keywords: ["room", "park avenue", "park avenue room"], 
-            wrong: () => "Nope. Think harder. It’s a place we’ll never forget!", 
-            right: "Correct. It was just our own little world for a while. I still think about it." 
-        },
-        { 
-            q: "The destination in our bucket list?", 
-            options: ["Munnar", "Ooty", "Goa", "Manali"], 
-            answer: "Ooty", 
-            wrong: () => "In your dreams! That's not where we're going. Try again.", 
-            right: "Spot on. Can't wait for the mist, the coffee, and us finally being there." 
-        },
-        { 
-            q: "Will you be my valentine?", 
-            options: ["Yes", "No"], 
-            answer: "Yes", 
-            wrong: () => "Nice try! Error 404, you are mine and you are being my valentine I'm not asking, i am telling click the other button.", 
-            right: "The only correct answer! I knew you'd make the right choice. 😉" 
+    <script>
+        let score = 0;
+        let currentQ = 0;
+
+        const questions = [
+            { q: "Where I first proposed?", a: ["Park", "Beach", "Home", "Text"], correct: 0, bg: "#ff9a9e" },
+            { q: "Where was our first date?", a: ["Cafe", "Movie", "Park Avenue", "Restaurant"], correct: 2, bg: "#a18cd1" },
+            { q: "What's special about 207?", a: ["Address", "Anniversary", "Lucky Number", "Just a number"], correct: 0, bg: "#fbc2eb" },
+            { q: "What do we love in Ooty?", a: ["Tea", "Coffee", "Chocolate", "Scenery"], correct: 1, bg: "#84fab0" }
+        ];
+
+        function triggerAngry() {
+            document.body.classList.add('shake');
+            document.getElementById('intro-cat').src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHYybmN6cXN6bmF5bHdqZ3p3eHh6cXN6bmF5bHdqZ3p3eHh6cXN6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/mlvseq9nOeYhqcISIl/giphy.gif";
+            document.getElementById('intro-text').innerText = "HOW DARE YOU?! 😤 Try again.";
+            document.getElementById('intro-no').style.display = 'none';
         }
-    ];
 
-    let currentIdx = 0;
-    let isCorrect = false;
-
-    function showPopup(text, isError) {
-        const p = document.getElementById('popup-note');
-        const ov = document.getElementById('overlay');
-        p.innerText = text + "\n\n(Tap screen to continue)";
-        p.style.borderColor = isError ? "#c9184a" : "#2d6a4f";
-        p.classList.add('show');
-        ov.style.display = 'block';
-        isCorrect = !isError;
-    }
-
-    function hidePopup() {
-        const p = document.getElementById('popup-note');
-        const ov = document.getElementById('overlay');
-        if (p.classList.contains('show')) {
-            p.classList.remove('show');
-            ov.style.display = 'none';
-            if (isCorrect) next();
+        function goToHeHe() {
+            document.body.classList.remove('shake');
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('hehe-screen').classList.remove('hidden');
         }
-    }
 
-    function startQuiz() { document.getElementById('intro-screen').classList.add('hidden'); document.getElementById('question-box').classList.remove('hidden'); loadQuestion(); }
+        function goToHandsome() {
+            document.getElementById('hehe-screen').classList.add('hidden');
+            document.getElementById('handsome-screen').classList.remove('hidden');
+        }
 
-    function loadQuestion() {
-        const qText = document.getElementById('question-text'); const optBox = document.getElementById('options-container'); const current = questions[currentIdx];
-        qText.innerText = current.q; optBox.innerHTML = '';
-        if (current.type === "input") {
-            const input = document.createElement('input'); input.type = 'text'; input.id = 'ans'; input.placeholder = "Type your answer...";
-            const b = document.createElement('button'); b.innerText = 'Submit'; b.className = 'btn';
-            b.onclick = (e) => { 
-                e.stopPropagation(); 
-                const val = document.getElementById('ans').value.toLowerCase();
-                const matched = current.keywords.some(k => val.includes(k));
-                if(matched) { showPopup(current.right, false); confetti(); } 
-                else { showPopup(current.wrong(), true); } 
-            };
-            optBox.append(input, b);
-        } else {
-            current.options.forEach(opt => {
-                const b = document.createElement('button'); b.innerText = opt; b.className = 'btn';
-                b.onclick = (e) => { e.stopPropagation(); if(opt === current.answer) { showPopup(current.right, false); confetti(); } else { showPopup(current.wrong(opt), true); } };
-                optBox.appendChild(b);
+        function startQuiz() {
+            document.getElementById('handsome-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            let q = questions[currentQ];
+            document.body.style.background = q.bg;
+            document.getElementById('question-text').innerText = q.q;
+            let options = document.getElementById('options-container');
+            options.innerHTML = '';
+            q.a.forEach((opt, i) => {
+                let btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(i);
+                options.appendChild(btn);
             });
         }
-    }
 
-    function next() { currentIdx++; if(currentIdx < questions.length) loadQuestion(); else showFinal(); }
-
-    function showFinal() {
-        document.getElementById('question-box').classList.add('hidden'); document.getElementById('final-screen').classList.remove('hidden');
-        const msg = "I’m glad we’re on the same page. Thanks for being my person and for dealing with my mood swings. Looking forward to Ooty, 207, and everything else we have planned. Happy Valentine's Day, favorite.";
-        let i = 0; 
-        function type() { 
-            if(i < msg.length) { 
-                document.getElementById('final-msg').innerHTML += msg.charAt(i); 
-                i++; 
-                setTimeout(type, 30); 
+        function checkAnswer(i) {
+            if(i === questions[currentQ].correct) {
+                score++;
+                alert("Happy Happy Happy! 🐱✨");
             } else {
-                document.getElementById('final-emojis').innerHTML = "🌹🫂👩‍❤️‍💋‍👨";
+                alert("Huh? 🐱❓");
+            }
+            currentQ++;
+            if(currentQ < questions.length) { showQuestion(); }
+            else { showProposal(); }
+        }
+
+        function showProposal() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('proposal-screen').classList.remove('hidden');
+            document.body.style.background = "#ff4b2b";
+        }
+
+        function moveNo() {
+            let btn = document.getElementById('no-btn-final');
+            btn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+            btn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
+        }
+
+        function revealGift() {
+            document.getElementById('proposal-screen').classList.add('hidden');
+            document.getElementById('gift-screen').classList.remove('hidden');
+            let text = "You've made me the luckiest person! I have a small surprise... open it!";
+            let i = 0;
+            function type() {
+                if(i < text.length) {
+                    document.getElementById('typewriter-msg').innerHTML += text.charAt(i);
+                    i++; setTimeout(type, 50);
+                }
+            }
+            type();
+        }
+
+        function showSmileMsg() {
+            document.getElementById('gift-box').classList.add('hidden');
+            document.getElementById('smile-msg').classList.remove('hidden');
+            document.getElementById('camera-btn').classList.remove('hidden');
+        }
+
+        function runPhotos() {
+            document.getElementById('camera-btn').classList.add('hidden');
+            document.getElementById('photo-gallery').style.display = 'block';
+            let slides = document.getElementsByClassName('slide');
+            let index = 0;
+            let interval = setInterval(() => {
+                for(let s of slides) s.style.display = 'none';
+                if(index < slides.length) {
+                    slides[index].style.display = 'block';
+                    index++;
+                } else {
+                    clearInterval(interval);
+                    document.getElementById('love-text').classList.remove('hidden');
+                    showRank();
+                }
+            }, 2000);
+        }
+
+        function showRank() {
+            let rank = "";
+            if(score === 4) rank = "RANK: THE ULTIMATE SOULMATE 🏆";
+            else if(score >= 2) rank = "RANK: COFFEE DATE PRO ☕";
+            else rank = "RANK: LUCKY I LOVE YOU 😂";
+            document.getElementById('rank-display').innerText = rank;
+            document.getElementById('maxwell').style.display = 'block';
+            confetti();
+        }
+
+        function confetti() {
+            // Simple emoji explosion
+            for(let i=0; i<20; i++) {
+                let e = document.createElement('div');
+                e.innerText = ['🌹','🫂','👩‍❤️‍💋‍👨'][Math.floor(Math.random()*3)];
+                e.style.position = 'absolute';
+                e.style.left = Math.random()*100 + 'vw';
+                e.style.top = '100vh';
+                e.style.fontSize = '30px';
+                e.style.transition = '2s';
+                document.body.appendChild(e);
+                setTimeout(() => { e.style.top = '-10vh'; e.style.transform = 'rotate(360deg)'; }, 100);
             }
         }
-        type(); 
-        setInterval(() => { const h = document.createElement('div'); h.className = 'floating-heart'; h.innerHTML = '❤️'; h.style.left = Math.random()*100+'vw'; document.body.appendChild(h); setTimeout(()=>h.remove(),4000); }, 300);
-    }
-</script>
+    </script>
 </body>
 </html>
 
