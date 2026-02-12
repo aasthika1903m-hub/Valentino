@@ -3,168 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Surprise for You ❤️</title>
+    <title>A Surprise For You ❤️</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
 
         :root {
-            --primary: #e63946;
-            --bg: linear-gradient(135deg, #ffe5ec 0%, #ffc2d1 100%);
+            --rose: #e63946;
             --gold: #d4af37;
+            --bg-1: linear-gradient(135deg, #ffe5ec 0%, #fff0f3 100%); /* Blush to Cream */
+            --bg-2: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); /* Lavender */
+            --bg-3: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); /* Sunset/Pink */
+            --bg-4: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Deep Purple */
+            --bg-5: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%); /* Misty Teal/Ooty */
         }
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             font-family: 'Poppins', sans-serif;
-            background: var(--bg);
+            background: var(--bg-1);
+            transition: background 1s ease;
             overflow: hidden;
             display: flex; align-items: center; justify-content: center;
         }
 
-        .container {
-            width: 90%; max-width: 400px; text-align: center;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 30px; border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            position: relative; transition: all 0.5s ease;
-        }
-
         .hidden { display: none !important; }
 
-        /* Step 1 & 2 Styles */
-        h1 { font-size: 1.5rem; color: #444; }
-        .script-font { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--gold); }
-        
+        /* Step 1 Styles */
+        .container {
+            width: 85%; max-width: 400px; text-align: center;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 40px 20px; border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative; z-index: 10;
+        }
+
+        h1 { font-weight: 400; color: #444; font-size: 1.4rem; }
+        .script { font-family: 'Dancing Script', cursive; font-size: 2.8rem; color: var(--gold); }
+
         button {
-            padding: 12px 25px; border: none; border-radius: 50px;
-            cursor: pointer; font-weight: 600; transition: transform 0.2s;
-            margin: 10px;
+            padding: 12px 28px; border: none; border-radius: 50px;
+            cursor: pointer; font-weight: 600; transition: all 0.3s ease;
+            margin: 10px; font-family: 'Poppins', sans-serif;
         }
 
-        .btn-yes { background: var(--primary); color: white; }
-        .btn-no { background: #ccc; color: #555; }
+        .btn-yes { background: var(--rose); color: white; }
+        .btn-no { background: #f0f0f0; color: #888; }
+        .btn-yes:hover { background: #c12a36; transform: scale(1.05); }
 
-        /* Shake Animation */
-        .shake { animation: shake 0.3s; }
+        /* Animations */
+        @keyframes floatUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: floatUp 1.5s ease forwards; }
+
+        .shake { animation: shake 0.1s ease-in-out infinite; }
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
 
-        /* Photo Styles */
-        .profile-img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--gold); margin-bottom: 20px; }
-        
-        /* Quiz Styles */
-        .quiz-input { width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        /* Modal / Pop-up */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal-content {
+            background: white; padding: 30px; border-radius: 20px; width: 80%; max-width: 300px; text-align: center;
+        }
 
-        /* Fleeing Button */
-        #flee-no { position: absolute; }
+        /* Floating Hearts */
+        .heart {
+            position: fixed; color: rgba(230, 57, 70, 0.3);
+            font-size: 20px; pointer-events: none; z-index: 1;
+            animation: moveUp 4s linear infinite;
+        }
+        @keyframes moveUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
 
-        /* Gift Box */
-        .gift-box { font-size: 80px; cursor: pointer; display: block; margin: 20px auto; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        /* Progress Bar */
+        .progress-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 6px; background: rgba(255,255,255,0.3); z-index: 2000;
+        }
+        #progress-bar { width: 0%; height: 100%; background: var(--rose); transition: width 0.5s ease; }
 
-        /* Flash Effect */
+        /* Quiz UI */
+        .option-btn { width: 100%; margin: 8px 0; background: white; border: 2px solid #ffccd5; color: #444; }
+        .option-btn:hover { background: #ffe5ec; border-color: var(--rose); }
+
+        /* Images */
+        .profile-img { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 5px solid var(--gold); margin-bottom: 15px; }
+
+        /* Final Elements */
+        .gift-box { font-size: 100px; cursor: pointer; transition: transform 0.3s; display: inline-block; }
+        .gift-box:active { transform: scale(0.8); }
+
         #flash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; opacity: 0; pointer-events: none; z-index: 1000;
+            background: white; opacity: 0; pointer-events: none; z-index: 3000;
         }
 
-        /* Gallery Scroll */
-        #scroll-container { 
-            height: 100vh; overflow-y: auto; width: 100%; display: flex; flex-direction: column; align-items: center; 
-            padding-top: 50px; background: #fff5f7;
+        #gallery-scroll {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 40px 0; z-index: 2500;
         }
-        .gallery-img { width: 85%; max-width: 300px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .final-msg { font-family: 'Dancing Script', cursive; font-size: 3rem; color: var(--primary); padding: 50px 0; }
+        .scroll-img { width: 85%; max-width: 350px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
 
+    <div class="progress-container"><div id="progress-bar"></div></div>
     <div id="flash"></div>
 
-    <div id="step1" class="container">
+    <div id="step1" class="container fade-in">
         <h1>I made a surprise for you, can you see it?</h1>
-        <button class="btn-yes" onclick="nextStep(2)">Yes</button>
-        <button class="btn-no" onclick="howDareYou(this)">No</button>
-        <p id="dare-msg" style="color:red; font-weight:bold; display:none;">HOW DARE YOU!</p>
+        <button class="btn-yes" onclick="startConfetti(this); setTimeout(() => nextStep(2), 1000)">Yes</button>
+        <button class="btn-no" onclick="triggerHowDareYou()">No</button>
     </div>
 
     <div id="step2" class="container hidden">
-        <h1 id="he-he">He he he... click for surprise</h1>
-        <button id="next-btn" class="btn-yes" onclick="showHandsome()">Next</button>
-        
-        <div id="handsome-content" class="hidden">
-            <img src="intro.jpg" class="profile-img" alt="You">
-            <h1 class="script-font">Hey Handsome!</h1>
-            <p id="typewriter"></p>
-            <button class="btn-yes" id="start-quiz-btn" onclick="nextStep(3)" style="display:none;">Get Started</button>
-        </div>
+        <h1 style="animation: bounce 1s infinite;">He he he... click for surprise</h1>
+        <button class="btn-yes" style="box-shadow: 0 0 15px var(--rose);" onclick="shatterEffect()">Next</button>
     </div>
 
-    <div id="step3" class="container hidden">
-        <h2 id="q-text">When was the proposal date?</h2>
-        <div id="options">
-            </div>
-        <p id="error-msg" style="color:red; font-size: 0.8rem;"></p>
+    <div id="step2-greeting" class="container hidden">
+        <img src="intro.jpg" class="profile-img">
+        <h1 class="script">Hey Handsome!</h1>
+        <p id="greet-text"></p>
+        <button id="get-started" class="btn-yes hidden" style="animation: pulse 1.5s infinite;" onclick="startQuiz()">Get Started</button>
     </div>
 
-    <div id="step4" class="container hidden">
-        <h1 class="script-font">Will you be my valentine?</h1>
-        <button class="btn-yes" onclick="valCorrect()">Yes</button>
-        <button class="btn-no" id="flee-no" onmouseover="flee()">No</button>
+    <div id="quiz-container" class="container hidden">
+        <h2 id="question-text"></h2>
+        <div id="options-area"></div>
+        <p id="quiz-feedback" style="font-size: 0.8rem; margin-top: 10px;"></p>
     </div>
 
-    <div id="step5" class="container hidden" style="overflow-y: auto; max-height: 80vh;">
-        <p id="final-typewriter" style="font-weight: 600;"></p>
-        <div id="gift-area" class="hidden">
-            <div class="gift-box" onclick="cameraFlash()">🎁</div>
+    <div id="finale-msg" class="container hidden">
+        <p id="type-final" style="font-size: 1.1rem; line-height: 1.6;"></p>
+        <div id="gift-section" class="hidden">
+            <div class="gift-box" onclick="cameraShutter()">🎁</div>
             <p>Tap the gift box</p>
         </div>
     </div>
 
-    <div id="scroll-container" class="hidden">
-        <h2 class="script-font">Memories 📸</h2>
-        <img src="gallery1.jpg" class="gallery-img">
-        <img src="gallery2.jpg" class="gallery-img">
-        <img src="gallery3.jpg" class="gallery-img">
-        <img src="final.jpg" class="gallery-img">
-        <div class="final-msg">I LOVE YOU</div>
+    <div id="gallery-scroll" class="hidden">
+        <h2 class="script">Our Memories</h2>
+        <img src="gallery1.jpg" class="scroll-img">
+        <img src="gallery2.jpg" class="scroll-img">
+        <img src="gallery3.jpg" class="scroll-img">
+        <img src="final.jpg" class="scroll-img">
+        <div class="script" style="font-size: 4rem; margin: 40px 0; color: var(--rose);">I love you</div>
+    </div>
+
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <p id="modal-msg"></p>
+            <button class="btn-yes" onclick="closeModal()">OK</button>
+        </div>
     </div>
 
     <script>
-        function nextStep(step) {
+        // Core Navigation
+        function nextStep(stepId) {
             document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
-            document.getElementById('step' + step).classList.remove('hidden');
+            if(stepId === 2) document.getElementById('step2').classList.remove('hidden');
         }
 
-        function howDareYou(btn) {
-            document.getElementById('step1').classList.add('shake');
-            document.getElementById('dare-msg').style.display = 'block';
-            setTimeout(() => {
-                document.getElementById('step1').classList.remove('shake');
-                document.getElementById('dare-msg').style.display = 'none';
-            }, 1500);
+        // Floating Hearts
+        setInterval(() => {
+            const heart = document.createElement('div');
+            heart.innerHTML = '❤️';
+            heart.className = 'heart';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }, 500);
+
+        // How Dare You Logic
+        function triggerHowDareYou() {
+            const body = document.body;
+            const container = document.querySelector('.container:not(.hidden)');
+            container.classList.add('shake');
+            showModal("<span style='color:red; font-weight:bold;'>HOW DARE YOU!</span>");
+            setTimeout(() => container.classList.remove('shake'), 1500);
         }
 
-        function showHandsome() {
-            document.getElementById('he-he').classList.add('hidden');
-            document.getElementById('next-btn').classList.add('hidden');
-            document.getElementById('handsome-content').classList.remove('hidden');
-            typeWriter("Hey Handsome!", "Let's play a little game. If you get these right, there's a surprise waiting.", "typewriter", () => {
-                document.getElementById('start-quiz-btn').style.display = 'inline-block';
+        function showModal(msg, callback) {
+            document.getElementById('modal-msg').innerHTML = msg;
+            document.getElementById('modal').classList.remove('hidden');
+            window.modalCallback = callback;
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+            if(window.modalCallback) window.modalCallback();
+        }
+
+        // Shatter Effect
+        function shatterEffect() {
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step2-greeting').classList.remove('hidden');
+            document.body.style.background = 'var(--bg-3)';
+            typeWriter("Let's play a little game. If you get these right, there's a surprise waiting.", "greet-text", () => {
+                document.getElementById('get-started').classList.remove('hidden');
             });
         }
 
-        function typeWriter(title, text, elementId, callback) {
+        function typeWriter(text, elementId, callback, speed = 40) {
             let i = 0;
+            const el = document.getElementById(elementId);
+            el.innerHTML = "";
             function type() {
                 if (i < text.length) {
-                    document.getElementById(elementId).innerHTML += text.charAt(i);
+                    el.innerHTML += text.charAt(i);
                     i++;
-                    setTimeout(type, 30);
-                } else if (callback) callback();
+                    setTimeout(type, speed);
+                } else if(callback) callback();
             }
             type();
         }
@@ -172,79 +233,119 @@
         // Quiz Logic
         let currentQ = 0;
         const questions = [
-            { q: "The proposal date?", ops: ["Oct 9", "Sept 9", "Oct 10"], ans: "Oct 9" },
-            { q: "Our first date?", ops: ["Movies", "Night street walking", "Dinner"], ans: "Night street walking" },
-            { q: "What's special in 207?", input: true, ans: ["room", "park avenue"] },
-            { q: "Destination on our bucket list?", ops: ["Ooty", "Kerala", "Goa"], ans: "Ooty" }
+            { q: "The proposal date?", ops: ["Oct 7", "Oct 8", "Oct 9", "Oct 10"], ans: "Oct 9", 
+              wrong: (choice) => choice === "Oct 10" ? "Are you serious right now? One day off is still WRONG. Do better." : "Seriously? You’re lucky I don’t revoke the 'Yes' right now. Try again.",
+              right: "Close call. You live to see another day. That day changed everything." },
+            { q: "Where was our first date?", ops: ["Movie night", "Dinner date", "Night street walking", "Coffee shop"], ans: "Night street walking",
+              wrong: () => "Incorrect! It's like you weren't even there. Try again!",
+              right: "Simple, quiet, and perfect. Better than any fancy dinner.", bg: 'var(--bg-3)' },
+            { q: "What's special in the number 207?", input: true, ans: ["room", "park avenue", "park avenue room"],
+              wrong: () => "Nope. Think harder. It’s a place we’ll never forget!",
+              right: "Correct. It was just our own little world for a while. I still think about it. ❤️", bg: 'var(--bg-4)' },
+            { q: "The destination in our bucket list?", ops: ["Munnar", "Ooty", "Goa", "Manali"], ans: "Ooty",
+              wrong: () => "In your dreams! That's not where we're going. Try again.",
+              right: "Spot on. Can't wait for the mist, the coffee, and us finally being there.", bg: 'var(--bg-5)' }
         ];
 
-        function loadQuiz() {
+        function startQuiz() {
+            document.getElementById('step2-greeting').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
             const q = questions[currentQ];
-            document.getElementById('q-text').innerText = q.q;
-            const optDiv = document.getElementById('options');
-            optDiv.innerHTML = '';
-            document.getElementById('error-msg').innerText = '';
+            document.getElementById('progress-bar').style.width = ((currentQ + 1) * 20) + "%";
+            if(q.bg) document.body.style.background = q.bg;
+            document.getElementById('question-text').innerText = q.q;
+            const area = document.getElementById('options-area');
+            area.innerHTML = "";
 
             if(q.input) {
                 const input = document.createElement('input');
-                input.className = 'quiz-input';
-                input.id = 'quiz-in';
+                input.style = "width:100%; padding:10px; border-radius:10px; border:1px solid #ccc; margin-bottom:10px;";
                 const btn = document.createElement('button');
-                btn.innerText = "Submit"; btn.className = 'btn-yes';
-                btn.onclick = () => checkAns(document.getElementById('quiz-in').value);
-                optDiv.appendChild(input); optDiv.appendChild(btn);
+                btn.className = "btn-yes"; btn.innerText = "Submit";
+                btn.onclick = () => checkAnswer(input.value.toLowerCase());
+                area.appendChild(input); area.appendChild(btn);
             } else {
-                q.ops.forEach(o => {
+                q.ops.forEach(opt => {
                     const b = document.createElement('button');
-                    b.innerText = o; b.className = 'btn-no';
-                    b.onclick = () => checkAns(o);
-                    optDiv.appendChild(b);
+                    b.className = "option-btn"; b.innerText = opt;
+                    b.onclick = () => checkAnswer(opt);
+                    area.appendChild(b);
                 });
             }
         }
 
-        function checkAns(val) {
+        function checkAnswer(val) {
             const q = questions[currentQ];
-            let isRight = false;
-            if(q.input) isRight = q.ans.includes(val.toLowerCase());
-            else isRight = (val === q.ans);
-
+            const isRight = q.input ? q.ans.includes(val) : (val === q.ans);
+            
             if(isRight) {
-                currentQ++;
-                if(currentQ < questions.length) loadQuiz();
-                else nextStep(4);
+                showModal(q.right, () => {
+                    currentQ++;
+                    if(currentQ < questions.length) loadQuestion();
+                    else showValentineQuestion();
+                });
             } else {
-                document.getElementById('error-msg').innerText = (val === "Oct 10") ? "Close! But no." : "Wrong answer! Try again.";
+                showModal(q.input ? q.wrong() : q.wrong(val));
             }
         }
-        loadQuiz();
 
-        // Flee Button
-        function flee() {
-            const btn = document.getElementById('flee-no');
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 50);
-            btn.style.left = x + 'px';
-            btn.style.top = y + 'px';
+        // Question 5: Valentine
+        function showValentineQuestion() {
+            document.body.style.background = 'var(--bg-1)';
+            const area = document.getElementById('quiz-container');
+            area.innerHTML = `
+                <h1 class="script">Will you be my valentine?</h1>
+                <button class="btn-yes" onclick="valentineYes()">Yes</button>
+                <button class="btn-no" id="flee-no" onmouseover="flee()" onclick="valentineTrap()">No</button>
+            `;
         }
 
-        function valCorrect() {
-            alert("The only correct answer! I knew you'd make the right choice. 😉");
-            nextStep(5);
-            typeWriter("", "I’m glad we’re on the same page. Thanks for being my person and for dealing with my mood swings. Looking forward to Ooty, 207, and everything else we have planned. Happy Valentine's Day, favorite. 🌹🫂👩‍❤️‍💋‍👨", "final-typewriter", () => {
-                document.getElementById('gift-area').classList.remove('hidden');
+        function flee() {
+            const b = document.getElementById('flee-no');
+            b.style.position = "fixed";
+            b.style.left = Math.random() * 70 + 15 + "vw";
+            b.style.top = Math.random() * 70 + 15 + "vh";
+        }
+
+        function valentineTrap() {
+            showModal("Nice try! Error 404, you are mine and you are being my valentine. I'm not asking, I am telling. Click the other button.");
+        }
+
+        function valentineYes() {
+            showModal("The only correct answer! I knew you'd make the right choice. 😉", () => {
+                document.getElementById('quiz-container').classList.add('hidden');
+                document.getElementById('finale-msg').classList.remove('hidden');
+                typeWriter("I’m glad we’re on the same page. Thanks for being my person and for dealing with my mood swings. Looking forward to Ooty, 207, and everything else we have planned. Happy Valentine's Day, favorite. 🌹🫂👩‍❤️‍💋‍👨", "type-final", () => {
+                    document.getElementById('gift-section').classList.remove('hidden');
+                }, 25);
             });
         }
 
-        function cameraFlash() {
-            const f = document.getElementById('flash');
-            f.style.opacity = '1';
+        function cameraShutter() {
+            const flash = document.getElementById('flash');
+            flash.style.opacity = '1';
             setTimeout(() => {
-                f.style.opacity = '0';
-                document.getElementById('step5').classList.add('hidden');
-                document.getElementById('scroll-container').classList.remove('hidden');
-                document.body.style.overflow = 'auto';
-            }, 200);
+                flash.style.opacity = '0';
+                document.getElementById('finale-msg').classList.add('hidden');
+                document.getElementById('gallery-scroll').classList.remove('hidden');
+            }, 300);
+        }
+
+        // Particle Effect for Yes
+        function startConfetti(el) {
+            for(let i=0; i<20; i++) {
+                const p = document.createElement('div');
+                p.innerHTML = '❤️'; p.style.position = 'absolute';
+                p.style.left = '50%'; p.style.top = '50%';
+                p.style.transform = `translate(${(Math.random()-0.5)*200}px, ${(Math.random()-0.5)*200}px)`;
+                p.style.transition = "all 1s ease";
+                el.appendChild(p);
+                setTimeout(() => p.remove(), 1000);
+            }
         }
     </script>
 </body>
