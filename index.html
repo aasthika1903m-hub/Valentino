@@ -215,8 +215,8 @@
         }
 
         const questions = [
-            { q: "The proposal date?", ops: ["Oct 7", "Oct 8", "Oct 9", "Oct 10"], ans: "Oct 9", 
-              wrong: (c) => c === "Oct 10" ? "Are you serious right now? One day off is still WRONG. Do better." : "Seriously? You’re lucky I don’t revoke the 'Yes' right now. Try again.",
+            { q: "The proposal date?", ops: ["Oct 7", "Oct 8", "Oct 9", "Oct 10"], ans: "Oct 8", 
+              wrong: (c) => c === "Oct 9" ? "Are you serious right now? One day off is still WRONG. Do better." : "Seriously? You’re lucky I don’t revoke the 'Yes' right now. Try again.",
               right: "Close call. You live to see another day. That day changed everything.", bg: 'var(--bg-2)' },
             { q: "Where was our first date?", ops: ["Movie night", "Dinner date", "Night street walking", "Coffee shop"], ans: "Night street walking",
               wrong: () => "Incorrect! It's like you weren't even there. Try again!",
@@ -249,7 +249,7 @@
                 input.placeholder = "Type here...";
                 const btn = document.createElement('button');
                 btn.className = "btn-yes"; btn.innerText = "Submit";
-                btn.onclick = () => checkAnswer(input.value.toLowerCase().trim());
+                btn.onclick = () => checkAnswer(input.value.toLowerCase());
                 area.appendChild(input); area.appendChild(btn);
             } else {
                 q.ops.forEach(opt => {
@@ -299,4 +299,56 @@
 
         function valentineYes() {
             confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
-            showModal
+            showModal("The only correct answer! I knew you'd make the right choice. 😉", () => {
+                document.getElementById('quiz-container').classList.add('hidden');
+                document.getElementById('finale-msg').classList.remove('hidden');
+                typeWriter("I’m glad we’re on the same page. Thanks for being my person and for dealing with my mood swings. Looking forward to Ooty, 207, and everything else we have planned. Happy Valentine's Day, favorite. 🌹🫂👩‍❤️‍💋‍👨", "type-final", () => {
+                    document.getElementById('gift-section').classList.remove('hidden');
+                }, 20);
+            });
+        }
+
+        function cameraShutter() {
+            const f = document.getElementById('flash');
+            f.style.opacity = '1';
+            setTimeout(() => {
+                f.style.opacity = '0';
+                document.getElementById('finale-msg').classList.add('hidden');
+                document.getElementById('gallery-scroll').classList.remove('hidden');
+                document.body.style.overflow = 'auto';
+                revealOnScroll();
+            }, 300);
+        }
+
+        function showModal(msg, cb) {
+            document.getElementById('modal-msg').innerHTML = msg;
+            document.getElementById('modal').classList.add('show');
+            window.modalCb = cb;
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+            if(window.modalCb) window.modalCb();
+        }
+
+        function heartExplosion() {
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#ff0a54', '#ff477e', '#ff7096'] });
+        }
+
+        function revealOnScroll() {
+            const imgs = document.querySelectorAll('.scroll-img');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+            }, { threshold: 0.2 });
+            imgs.forEach(img => observer.observe(img));
+        }
+
+        setInterval(() => {
+            const h = document.createElement('div'); h.innerHTML = '❤️'; h.className = 'heart';
+            h.style.left = Math.random() * 100 + 'vw'; h.style.animationDuration = (Math.random()*2+3)+'s';
+            document.body.appendChild(h); setTimeout(()=>h.remove(), 5000);
+        }, 600);
+    </script>
+</body>
+</html>
+
