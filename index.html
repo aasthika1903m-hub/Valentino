@@ -215,8 +215,8 @@
         }
 
         const questions = [
-            { q: "The proposal date?", ops: ["Oct 7", "Oct 8", "Oct 9", "Oct 10"], ans: "Oct 8", 
-              wrong: (c) => c === "Oct 9" ? "Are you serious right now? One day off is still WRONG. Do better." : "Seriously? You’re lucky I don’t revoke the 'Yes' right now. Try again.",
+            { q: "The proposal date?", ops: ["Oct 7", "Oct 8", "Oct 9", "Oct 10"], ans: "Oct 9", 
+              wrong: (c) => c === "Oct 10" ? "Are you serious right now? One day off is still WRONG. Do better." : "Seriously? You’re lucky I don’t revoke the 'Yes' right now. Try again.",
               right: "Close call. You live to see another day. That day changed everything.", bg: 'var(--bg-2)' },
             { q: "Where was our first date?", ops: ["Movie night", "Dinner date", "Night street walking", "Coffee shop"], ans: "Night street walking",
               wrong: () => "Incorrect! It's like you weren't even there. Try again!",
@@ -249,7 +249,7 @@
                 input.placeholder = "Type here...";
                 const btn = document.createElement('button');
                 btn.className = "btn-yes"; btn.innerText = "Submit";
-                btn.onclick = () => checkAnswer(input.value.toLowerCase());
+                btn.onclick = () => checkAnswer(input.value.toLowerCase().trim());
                 area.appendChild(input); area.appendChild(btn);
             } else {
                 q.ops.forEach(opt => {
