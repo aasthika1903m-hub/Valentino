@@ -11,22 +11,25 @@
         :root {
             --rose: #e63946;
             --gold: #d4af37;
-            --bg-intro: linear-gradient(135deg, #ffe5ec 0%, #fff0f3 100%);
-            --bg-quiz: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --bg-1: linear-gradient(135deg, #ffe5ec 0%, #fff0f3 100%);
+            --bg-2: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --bg-3: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            --bg-4: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-5: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
         }
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             font-family: 'Poppins', sans-serif;
-            background: var(--bg-intro);
+            background: var(--bg-1);
             transition: background 1.5s ease;
-            display: flex; align-items: center; justify-content: center;
             overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
         }
 
         .hidden { display: none !important; }
 
-        /* Card Styles */
+        /* Step 1 & Card Styles */
         .container {
             width: 85%; max-width: 400px; text-align: center;
             background: rgba(255, 255, 255, 0.85);
@@ -35,286 +38,265 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.1);
             position: relative; z-index: 10;
             border: 1px solid rgba(255,255,255,0.3);
-            animation: bounceIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        @keyframes bounceIn {
-            from { opacity: 0; transform: scale(0.8) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
+        h1, h2 { color: #444; font-weight: 600; }
         .script { font-family: 'Dancing Script', cursive; font-size: 2.8rem; color: var(--gold); }
 
         button {
-            padding: 14px 28px; border: none; border-radius: 50px;
-            cursor: pointer; font-weight: 600; margin: 10px;
-            transition: all 0.3s ease; font-family: 'Poppins', sans-serif;
+            padding: 14px 30px; border: none; border-radius: 50px;
+            cursor: pointer; font-weight: 600; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin: 10px; font-family: 'Poppins', sans-serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .btn-yes { background: var(--rose); color: white; box-shadow: 0 4px 15px rgba(230,57,70,0.2); }
+        .btn-yes { background: var(--rose); color: white; }
         .btn-no { background: #f0f0f0; color: #888; }
-        .btn-yes:hover { transform: scale(1.1); }
+        .btn-yes:hover { transform: scale(1.1) rotate(2deg); background: #d0303d; }
 
         /* Animations */
-        .shake { animation: intenseShake 0.15s infinite; }
-        @keyframes intenseShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
+        .fade-in { animation: fadeInUp 1s ease forwards; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Modal Styles */
+        .shake { animation: highFreqShake 0.15s infinite; }
+        @keyframes highFreqShake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .shatter { animation: shatterAnim 0.8s ease forwards; }
+        @keyframes shatterAnim {
+            to { transform: scale(2); opacity: 0; filter: blur(10px); }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 8px; background: rgba(255,255,255,0.3); z-index: 2000;
+        }
+        #progress-bar { width: 0%; height: 100%; background: var(--rose); border-radius: 0 5px 5px 0; transition: width 0.6s ease; }
+
+        /* Quiz UI */
+        .option-btn { width: 100%; margin: 10px 0; background: white; border: 2px solid #ffccd5; color: #444; }
+        .option-btn:hover { background: #ffe5ec; border-color: var(--rose); }
+
+        /* Modal Pop-up */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
-            display: none; align-items: center; justify-content: center; z-index: 5000;
+            display: flex; align-items: center; justify-content: center; z-index: 5000;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s;
         }
+        .modal.show { opacity: 1; pointer-events: auto; }
         .modal-content {
-            background: white; padding: 35px; border-radius: 25px;
-            width: 80%; max-width: 320px; text-align: center;
-            animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: white; padding: 35px; border-radius: 25px; width: 85%; max-width: 320px; text-align: center;
+            transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        @keyframes popUp { from { transform: scale(0.5); } to { transform: scale(1); } }
-
-        /* Progress Bar */
-        .prog-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 8px; background: rgba(0,0,0,0.05); z-index: 2000; }
-        #prog-bar { height: 100%; width: 0%; background: var(--rose); transition: width 0.6s ease; }
+        .modal.show .modal-content { transform: scale(1); }
 
         /* Floating Hearts */
-        .heart-float { position: fixed; color: rgba(230, 57, 70, 0.15); pointer-events: none; z-index: 1; animation: floatUp 4s linear infinite; }
-        @keyframes floatUp { 0% { transform: translateY(110vh) rotate(0deg); } 100% { transform: translateY(-10vh) rotate(360deg); } }
+        .heart { position: fixed; color: rgba(230, 57, 70, 0.4); font-size: 20px; pointer-events: none; z-index: 1; animation: floatHeart 4s linear infinite; }
+        @keyframes floatHeart {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
 
         /* Final Scroll Gallery */
-        #gallery {
+        #gallery-scroll {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; overflow-y: auto; display: none;
-            flex-direction: column; align-items: center; z-index: 4000; padding: 60px 0;
+            background: #fff; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 50px 0; z-index: 4000;
         }
-        .pic { 
-            width: 85%; max-width: 380px; border-radius: 20px; margin-bottom: 40px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
-            opacity: 0; transform: translateY(40px); transition: 1s ease;
-        }
-        .pic.visible { opacity: 1; transform: translateY(0); }
+        .scroll-img { width: 85%; max-width: 380px; border-radius: 20px; margin-bottom: 40px; 
+                      box-shadow: 0 15px 30px rgba(0,0,0,0.1); opacity: 0; transform: translateY(50px); transition: all 0.8s ease; }
+        .scroll-img.visible { opacity: 1; transform: translateY(0); }
 
         #flash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; pointer-events: none; z-index: 6000; }
-        .gift { font-size: 100px; cursor: pointer; animation: heartbeat 1.5s infinite; display: inline-block; }
-        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        
+        .gift-box { font-size: 110px; cursor: pointer; display: inline-block; animation: heartbeat 1.5s infinite; }
+        @keyframes heartbeat { 0% { transform: scale(1); } 15% { transform: scale(1.15); } 30% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
-    <div class="prog-wrap"><div id="prog-bar"></div></div>
+    <div class="progress-container"><div id="progress-bar"></div></div>
     <div id="flash"></div>
 
-    <div id="s1" class="container">
+    <div id="step1" class="container fade-in">
         <h1>I made a surprise for you, can you see it?</h1>
-        <button class="btn-yes" onclick="celebrate(); setTimeout(() => toStep(2), 600)">Yes</button>
-        <button class="btn-no" onclick="howDareYou()">No</button>
+        <button class="btn-yes" onclick="heartExplosion(); nextStep(2)">Yes</button>
+        <button class="btn-no" onclick="triggerHowDareYou()">No</button>
     </div>
 
-    <div id="s2" class="container hidden">
-        <h1 class="script">He he he...</h1>
-        <p>Click for surprise</p>
-        <button class="btn-yes" onclick="showIntro()">Next</button>
+    <div id="step2" class="container hidden">
+        <h1 style="animation: bounce 1s infinite;">He he he... click for surprise</h1>
+        <button class="btn-yes" onclick="shatterTransition()">Next</button>
     </div>
 
-    <div id="s-intro" class="container hidden">
-        <img src="intro.jpg" style="width:160px; height:160px; border-radius:50%; object-fit:cover; border:5px solid var(--gold); margin-bottom:15px;">
+    <div id="step2-greeting" class="container hidden">
+        <img src="intro.jpg" class="profile-img" style="width:160px; height:160px; border-radius:50%; border:5px solid var(--gold); object-fit:cover; margin-bottom:15px;">
         <h1 class="script">Hey Handsome!</h1>
-        <p id="type-greet"></p>
-        <button id="start-btn" class="btn-yes hidden" onclick="startQuiz()">Get Started</button>
+        <p id="greet-text"></p>
+        <button id="get-started" class="btn-yes hidden" onclick="startQuiz()">Get Started</button>
     </div>
 
-    <div id="s-quiz" class="container hidden">
-        <h2 id="q-text"></h2>
-        <div id="ans-box"></div>
+    <div id="quiz-container" class="container hidden">
+        <h2 id="question-text"></h2>
+        <div id="options-area"></div>
     </div>
 
-    <div id="s-final" class="container hidden">
-        <p id="type-final" style="line-height: 1.7;"></p>
-        <div id="gift-wrap" class="hidden">
-            <div class="gift" onclick="snap()">🎁</div>
-            <p style="color: #888; font-size: 0.9rem;">Open your gift</p>
+    <div id="finale-msg" class="container hidden">
+        <p id="type-final" style="font-size: 1.1rem; line-height: 1.7;"></p>
+        <div id="gift-section" class="hidden">
+            <div class="gift-box" onclick="cameraShutter()">🎁</div>
+            <p>Tap the gift box</p>
         </div>
     </div>
 
-    <div id="gallery">
+    <div id="gallery-scroll" class="hidden">
         <h2 class="script">Our Memories</h2>
-        <img src="gallery1.jpg" class="pic">
-        <img src="gallery2.jpg" class="pic">
-        <img src="gallery3.jpg" class="pic">
-        <img src="final.jpg" class="pic">
-        <div class="script" style="font-size: 3.5rem; color: var(--rose); margin: 60px 0;">I love you</div>
+        <img src="gallery1.jpg" class="scroll-img">
+        <img src="gallery2.jpg" class="scroll-img">
+        <img src="gallery3.jpg" class="scroll-img">
+        <img src="final.jpg" class="scroll-img">
+        <div class="script" style="font-size: 3.5rem; color: var(--rose); margin: 50px 0;">I love you</div>
     </div>
 
     <div id="modal" class="modal">
         <div class="modal-content">
-            <p id="m-msg" style="font-weight: 600;"></p>
-            <button class="btn-yes" onclick="closeM()">OK</button>
+            <p id="modal-msg" style="font-weight: 600;"></p>
+            <button class="btn-yes" onclick="closeModal()">OK</button>
         </div>
     </div>
 
     <script>
-        let currentStep = 0;
+        let currentQ = 0;
 
-        function toStep(n) {
+        function nextStep(step) {
             document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
-            if(n === 2) document.getElementById('s2').classList.remove('hidden');
+            if(step === 2) document.getElementById('step2').classList.remove('hidden');
         }
 
-        function howDareYou() {
-            document.getElementById('s1').classList.add('shake');
-            alertM("<span style='color:red'>HOW DARE YOU!</span>", () => {
-                document.getElementById('s1').classList.remove('shake');
+        function triggerHowDareYou() {
+            const container = document.querySelector('.container:not(.hidden)');
+            container.classList.add('shake');
+            showModal("<span style='color:red;'>HOW DARE YOU!</span>", () => {
+                container.classList.remove('shake');
             });
         }
 
-        function showIntro() {
-            document.getElementById('s2').classList.add('hidden');
-            document.getElementById('s-intro').classList.remove('hidden');
-            typeOut("Let's play a little game. If you get these right, there's a surprise waiting.", "type-greet", () => {
-                document.getElementById('start-btn').classList.remove('hidden');
-            });
+        function shatterTransition() {
+            const step2 = document.getElementById('step2');
+            step2.classList.add('shatter');
+            setTimeout(() => {
+                step2.classList.add('hidden');
+                document.getElementById('step2-greeting').classList.remove('hidden');
+                document.body.style.background = 'var(--bg-3)';
+                typeWriter("Let's play a little game. If you get these right, there's a surprise waiting.", "greet-text", () => {
+                    document.getElementById('get-started').classList.remove('hidden');
+                });
+            }, 800);
+        }
+
+        function typeWriter(text, elementId, callback, speed = 35) {
+            let i = 0;
+            const el = document.getElementById(elementId);
+            el.innerHTML = "";
+            function type() {
+                if (i < text.length) {
+                    el.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else if(callback) callback();
+            }
+            type();
         }
 
         const questions = [
-            { q: "The proposal date?", ops: ["Oct 7", "Oct 8", "Oct 9", "Oct 10"], ans: "Oct 9", msg: "Close call. You live to see another day. That day changed everything." },
-            { q: "Where was our first date?", ops: ["Movie night", "Dinner date", "Night street walking", "Coffee shop"], ans: "Night street walking", msg: "Simple, quiet, and perfect." },
-            { q: "What's special in the number 207?", input: true, msg: "Correct. It was just our own little world. ❤️" },
-            { q: "The destination in our bucket list?", ops: ["Munnar", "Ooty", "Goa", "Manali"], ans: "Ooty", msg: "Spot on. Can't wait for the mist and us finally being there." }
+            { q: "The proposal date?", ops: ["Oct 7", "Oct 8", "Oct 9", "Oct 10"], ans: "Oct 9", 
+              wrong: (c) => c === "Oct 10" ? "Are you serious right now? One day off is still WRONG. Do better." : "Seriously? You’re lucky I don’t revoke the 'Yes' right now. Try again.",
+              right: "Close call. You live to see another day. That day changed everything.", bg: 'var(--bg-2)' },
+            { q: "Where was our first date?", ops: ["Movie night", "Dinner date", "Night street walking", "Coffee shop"], ans: "Night street walking",
+              wrong: () => "Incorrect! It's like you weren't even there. Try again!",
+              right: "Simple, quiet, and perfect. Better than any fancy dinner.", bg: 'var(--bg-3)' },
+            { q: "What's special in the number 207?", input: true, ans: ["room", "park avenue", "park avenue room"],
+              wrong: () => "Nope. Think harder. It’s a place we’ll never forget!",
+              right: "Correct. It was just our own little world for a while. I still think about it. ❤️", bg: 'var(--bg-4)' },
+            { q: "The destination in our bucket list?", ops: ["Munnar", "Ooty", "Goa", "Manali"], ans: "Ooty",
+              wrong: () => "In your dreams! That's not where we're going. Try again.",
+              right: "Spot on. Can't wait for the mist, the coffee, and us finally being there.", bg: 'var(--bg-5)' }
         ];
 
         function startQuiz() {
-            document.body.style.background = "var(--bg-quiz)";
-            document.getElementById('s-intro').classList.add('hidden');
-            document.getElementById('s-quiz').classList.remove('hidden');
-            loadQ();
+            document.getElementById('step2-greeting').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            loadQuestion();
         }
 
-        function loadQ() {
-            const q = questions[currentStep];
-            document.getElementById('prog-bar').style.width = ((currentStep + 1) * 20) + "%";
-            document.getElementById('q-text').innerText = q.q;
-            const box = document.getElementById('ans-box');
-            box.innerHTML = "";
+        function loadQuestion() {
+            const q = questions[currentQ];
+            document.getElementById('progress-bar').style.width = ((currentQ + 1) * 20) + "%";
+            document.body.style.background = q.bg;
+            document.getElementById('question-text').innerText = q.q;
+            const area = document.getElementById('options-area');
+            area.innerHTML = "";
 
             if(q.input) {
-                const i = document.createElement('input');
-                i.style = "width:100%; padding:14px; border-radius:15px; border:2px solid #ddd; margin-bottom:15px; box-sizing:border-box;";
-                i.placeholder = "Type your answer..."; i.id = "user-input";
-                const b = document.createElement('button');
-                b.className = "btn-yes"; b.innerText = "Submit";
-                b.onclick = () => checkAns(document.getElementById('user-input').value.toLowerCase().trim());
-                box.appendChild(i); box.appendChild(b);
+                const input = document.createElement('input');
+                input.style = "width:100%; padding:15px; border-radius:15px; border:2px solid #ddd; margin-bottom:15px; box-sizing:border-box;";
+                input.placeholder = "Type here...";
+                const btn = document.createElement('button');
+                btn.className = "btn-yes"; btn.innerText = "Submit";
+                btn.onclick = () => checkAnswer(input.value.toLowerCase().trim());
+                area.appendChild(input); area.appendChild(btn);
             } else {
                 q.ops.forEach(opt => {
                     const b = document.createElement('button');
-                    b.className = "btn-no"; b.style.width = "100%"; b.innerText = opt;
-                    b.onclick = () => checkAns(opt);
-                    box.appendChild(b);
+                    b.className = "option-btn"; b.innerText = opt;
+                    b.onclick = () => checkAnswer(opt);
+                    area.appendChild(b);
                 });
             }
         }
 
-        function checkAns(val) {
-            const q = questions[currentStep];
-            let isCorrect = false;
-            
-            if(q.input) {
-                // Smart Logic: Checks for 'park', 'avenue', or 'room'
-                if(val.includes("park") || val.includes("avenue") || val.includes("room")) isCorrect = true;
-            } else {
-                if(val === q.ans) isCorrect = true;
-            }
-
-            if(isCorrect) {
-                celebrate();
-                alertM(q.msg, () => {
-                    currentStep++;
-                    if(currentStep < questions.length) loadQ();
-                    else showValentine();
+        function checkAnswer(val) {
+            const q = questions[currentQ];
+            const isRight = q.input ? q.ans.includes(val) : (val === q.ans);
+            if(isRight) {
+                heartExplosion();
+                showModal(q.right, () => {
+                    currentQ++;
+                    if(currentQ < questions.length) loadQuestion();
+                    else showValentineQ();
                 });
             } else {
-                alertM("Wrong answer! Try again.");
+                showModal(q.input ? q.wrong() : q.wrong(val));
             }
         }
 
-        function showValentine() {
-            document.body.style.background = "var(--bg-intro)";
-            document.getElementById('s-quiz').innerHTML = `
-                <h1 class="script" style="font-size:2.2rem">Will you be my valentine?</h1>
-                <button class="btn-yes" onclick="valYes()">Yes</button>
-                <button class="btn-no" id="flee-no" onmouseover="flee()">No</button>
+        function showValentineQ() {
+            document.body.style.background = 'var(--bg-1)';
+            const area = document.getElementById('quiz-container');
+            area.innerHTML = `
+                <h1 class="script">Will you be my valentine?</h1>
+                <button class="btn-yes" onclick="valentineYes()">Yes</button>
+                <button class="btn-no" id="flee-no" onmouseover="flee()" onclick="valentineTrap()">No</button>
             `;
         }
 
         function flee() {
-            const btn = document.getElementById('flee-no');
-            btn.style.position = "fixed";
-            btn.style.left = Math.random() * 70 + 15 + "vw";
-            btn.style.top = Math.random() * 70 + 15 + "vh";
+            const b = document.getElementById('flee-no');
+            b.style.position = "fixed";
+            b.style.left = Math.random() * 80 + 10 + "vw";
+            b.style.top = Math.random() * 80 + 10 + "vh";
         }
 
-        function valYes() {
-            celebrate();
-            document.getElementById('s-quiz').classList.add('hidden');
-            document.getElementById('s-final').classList.remove('hidden');
-            typeOut("I’m glad we’re on the same page. Thanks for being my person and for dealing with my mood swings. Looking forward to Ooty, 207, and everything else we have planned. Happy Valentine's Day, favorite. 🌹🫂👩‍❤️‍💋‍👨", "type-final", () => {
-                document.getElementById('gift-wrap').classList.remove('hidden');
-            });
+        function valentineTrap() {
+            showModal("Nice try! Error 404, you are mine and you are being my valentine I'm not asking, i am telling click the other button.");
         }
 
-        function snap() {
-            const f = document.getElementById('flash');
-            f.style.opacity = "1";
-            setTimeout(() => {
-                f.style.opacity = "0";
-                document.getElementById('s-final').classList.add('hidden');
-                document.getElementById('gallery').style.display = "flex";
-                document.body.style.overflow = "auto";
-                revealOnScroll();
-            }, 300);
-        }
-
-        function typeOut(t, id, cb) {
-            let i = 0; const el = document.getElementById(id); el.innerText = "";
-            const timer = setInterval(() => {
-                if(i < t.length) { el.innerText += t.charAt(i); i++; }
-                else { clearInterval(timer); if(cb) cb(); }
-            }, 40);
-        }
-
-        function celebrate() {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#ff0a54', '#ff477e', '#ff7096'] });
-        }
-
-        function alertM(m, cb) {
-            document.getElementById('m-msg').innerHTML = m;
-            document.getElementById('modal').style.display = "flex";
-            window.modalCallback = cb;
-        }
-
-        function closeM() {
-            document.getElementById('modal').style.display = "none";
-            if(window.modalCallback) window.modalCallback();
-        }
-
-        function revealOnScroll() {
-            const pics = document.querySelectorAll('.pic');
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
-            }, { threshold: 0.1 });
-            pics.forEach(p => observer.observe(p));
-        }
-
-        // Ambient floating hearts
-        setInterval(() => {
-            const h = document.createElement('div'); h.innerHTML = '❤️'; h.className = 'heart-float';
-            h.style.left = Math.random() * 100 + 'vw'; h.style.fontSize = (Math.random() * 20 + 10) + 'px';
-            document.body.appendChild(h); setTimeout(() => h.remove(), 4000);
-        }, 600);
-    </script>
-</body>
-</html>
-
+        function valentineYes() {
+            confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
+            showModal
