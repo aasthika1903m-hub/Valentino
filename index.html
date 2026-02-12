@@ -4,115 +4,119 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Surprise For You ❤️</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
 
         :root {
             --rose: #e63946;
             --gold: #d4af37;
-            --bg-1: linear-gradient(135deg, #ffe5ec 0%, #fff0f3 100%); /* Blush to Cream */
-            --bg-2: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); /* Lavender */
-            --bg-3: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); /* Sunset/Pink */
-            --bg-4: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Deep Purple */
-            --bg-5: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%); /* Misty Teal/Ooty */
+            --bg-1: linear-gradient(135deg, #ffe5ec 0%, #fff0f3 100%);
+            --bg-2: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --bg-3: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            --bg-4: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-5: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
         }
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             font-family: 'Poppins', sans-serif;
             background: var(--bg-1);
-            transition: background 1s ease;
+            transition: background 1.5s ease;
             overflow: hidden;
             display: flex; align-items: center; justify-content: center;
         }
 
         .hidden { display: none !important; }
 
-        /* Step 1 Styles */
+        /* Step 1 & Card Styles */
         .container {
             width: 85%; max-width: 400px; text-align: center;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            padding: 40px 20px; border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 40px 25px; border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
             position: relative; z-index: 10;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
-        h1 { font-weight: 400; color: #444; font-size: 1.4rem; }
+        h1, h2 { color: #444; font-weight: 600; }
         .script { font-family: 'Dancing Script', cursive; font-size: 2.8rem; color: var(--gold); }
 
         button {
-            padding: 12px 28px; border: none; border-radius: 50px;
-            cursor: pointer; font-weight: 600; transition: all 0.3s ease;
+            padding: 14px 30px; border: none; border-radius: 50px;
+            cursor: pointer; font-weight: 600; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             margin: 10px; font-family: 'Poppins', sans-serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .btn-yes { background: var(--rose); color: white; }
         .btn-no { background: #f0f0f0; color: #888; }
-        .btn-yes:hover { background: #c12a36; transform: scale(1.05); }
+        .btn-yes:hover { transform: scale(1.1) rotate(2deg); background: #d0303d; }
 
         /* Animations */
-        @keyframes floatUp {
-            from { opacity: 0; transform: translateY(20px); }
+        .fade-in { animation: fadeInUp 1s ease forwards; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .fade-in { animation: floatUp 1.5s ease forwards; }
 
-        .shake { animation: shake 0.1s ease-in-out infinite; }
-        @keyframes shake {
+        .shake { animation: highFreqShake 0.15s infinite; }
+        @keyframes highFreqShake {
             0% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
 
-        /* Modal / Pop-up */
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
-            display: flex; align-items: center; justify-content: center; z-index: 1000;
-        }
-        .modal-content {
-            background: white; padding: 30px; border-radius: 20px; width: 80%; max-width: 300px; text-align: center;
-        }
-
-        /* Floating Hearts */
-        .heart {
-            position: fixed; color: rgba(230, 57, 70, 0.3);
-            font-size: 20px; pointer-events: none; z-index: 1;
-            animation: moveUp 4s linear infinite;
-        }
-        @keyframes moveUp {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        .shatter { animation: shatterAnim 0.8s ease forwards; }
+        @keyframes shatterAnim {
+            to { transform: scale(2); opacity: 0; filter: blur(10px); }
         }
 
         /* Progress Bar */
         .progress-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 6px; background: rgba(255,255,255,0.3); z-index: 2000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 8px; background: rgba(255,255,255,0.3); z-index: 2000;
         }
-        #progress-bar { width: 0%; height: 100%; background: var(--rose); transition: width 0.5s ease; }
+        #progress-bar { width: 0%; height: 100%; background: var(--rose); border-radius: 0 5px 5px 0; transition: width 0.6s ease; }
 
         /* Quiz UI */
-        .option-btn { width: 100%; margin: 8px 0; background: white; border: 2px solid #ffccd5; color: #444; }
+        .option-btn { width: 100%; margin: 10px 0; background: white; border: 2px solid #ffccd5; color: #444; }
         .option-btn:hover { background: #ffe5ec; border-color: var(--rose); }
 
-        /* Images */
-        .profile-img { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 5px solid var(--gold); margin-bottom: 15px; }
-
-        /* Final Elements */
-        .gift-box { font-size: 100px; cursor: pointer; transition: transform 0.3s; display: inline-block; }
-        .gift-box:active { transform: scale(0.8); }
-
-        #flash {
+        /* Modal Pop-up */
+        .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; opacity: 0; pointer-events: none; z-index: 3000;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center; z-index: 5000;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s;
+        }
+        .modal.show { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: white; padding: 35px; border-radius: 25px; width: 85%; max-width: 320px; text-align: center;
+            transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal.show .modal-content { transform: scale(1); }
+
+        /* Floating Hearts */
+        .heart { position: fixed; color: rgba(230, 57, 70, 0.4); font-size: 20px; pointer-events: none; z-index: 1; animation: floatHeart 4s linear infinite; }
+        @keyframes floatHeart {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
 
+        /* Final Scroll Gallery */
         #gallery-scroll {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 40px 0; z-index: 2500;
+            background: #fff; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 50px 0; z-index: 4000;
         }
-        .scroll-img { width: 85%; max-width: 350px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .scroll-img { width: 85%; max-width: 380px; border-radius: 20px; margin-bottom: 40px; 
+                      box-shadow: 0 15px 30px rgba(0,0,0,0.1); opacity: 0; transform: translateY(50px); transition: all 0.8s ease; }
+        .scroll-img.visible { opacity: 1; transform: translateY(0); }
+
+        #flash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; pointer-events: none; z-index: 6000; }
+        
+        .gift-box { font-size: 110px; cursor: pointer; display: inline-block; animation: heartbeat 1.5s infinite; }
+        @keyframes heartbeat { 0% { transform: scale(1); } 15% { transform: scale(1.15); } 30% { transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -122,30 +126,29 @@
 
     <div id="step1" class="container fade-in">
         <h1>I made a surprise for you, can you see it?</h1>
-        <button class="btn-yes" onclick="startConfetti(this); setTimeout(() => nextStep(2), 1000)">Yes</button>
+        <button class="btn-yes" onclick="heartExplosion(); nextStep(2)">Yes</button>
         <button class="btn-no" onclick="triggerHowDareYou()">No</button>
     </div>
 
     <div id="step2" class="container hidden">
         <h1 style="animation: bounce 1s infinite;">He he he... click for surprise</h1>
-        <button class="btn-yes" style="box-shadow: 0 0 15px var(--rose);" onclick="shatterEffect()">Next</button>
+        <button class="btn-yes" onclick="shatterTransition()">Next</button>
     </div>
 
     <div id="step2-greeting" class="container hidden">
-        <img src="intro.jpg" class="profile-img">
+        <img src="intro.jpg" class="profile-img" style="width:160px; height:160px; border-radius:50%; border:5px solid var(--gold); object-fit:cover; margin-bottom:15px;">
         <h1 class="script">Hey Handsome!</h1>
         <p id="greet-text"></p>
-        <button id="get-started" class="btn-yes hidden" style="animation: pulse 1.5s infinite;" onclick="startQuiz()">Get Started</button>
+        <button id="get-started" class="btn-yes hidden" onclick="startQuiz()">Get Started</button>
     </div>
 
     <div id="quiz-container" class="container hidden">
         <h2 id="question-text"></h2>
         <div id="options-area"></div>
-        <p id="quiz-feedback" style="font-size: 0.8rem; margin-top: 10px;"></p>
     </div>
 
     <div id="finale-msg" class="container hidden">
-        <p id="type-final" style="font-size: 1.1rem; line-height: 1.6;"></p>
+        <p id="type-final" style="font-size: 1.1rem; line-height: 1.7;"></p>
         <div id="gift-section" class="hidden">
             <div class="gift-box" onclick="cameraShutter()">🎁</div>
             <p>Tap the gift box</p>
@@ -158,65 +161,46 @@
         <img src="gallery2.jpg" class="scroll-img">
         <img src="gallery3.jpg" class="scroll-img">
         <img src="final.jpg" class="scroll-img">
-        <div class="script" style="font-size: 4rem; margin: 40px 0; color: var(--rose);">I love you</div>
+        <div class="script" style="font-size: 3.5rem; color: var(--rose); margin: 50px 0;">I love you</div>
     </div>
 
-    <div id="modal" class="modal hidden">
+    <div id="modal" class="modal">
         <div class="modal-content">
-            <p id="modal-msg"></p>
+            <p id="modal-msg" style="font-weight: 600;"></p>
             <button class="btn-yes" onclick="closeModal()">OK</button>
         </div>
     </div>
 
     <script>
-        // Core Navigation
-        function nextStep(stepId) {
+        let currentQ = 0;
+
+        function nextStep(step) {
             document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
-            if(stepId === 2) document.getElementById('step2').classList.remove('hidden');
+            if(step === 2) document.getElementById('step2').classList.remove('hidden');
         }
 
-        // Floating Hearts
-        setInterval(() => {
-            const heart = document.createElement('div');
-            heart.innerHTML = '❤️';
-            heart.className = 'heart';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 5000);
-        }, 500);
-
-        // How Dare You Logic
         function triggerHowDareYou() {
-            const body = document.body;
             const container = document.querySelector('.container:not(.hidden)');
             container.classList.add('shake');
-            showModal("<span style='color:red; font-weight:bold;'>HOW DARE YOU!</span>");
-            setTimeout(() => container.classList.remove('shake'), 1500);
-        }
-
-        function showModal(msg, callback) {
-            document.getElementById('modal-msg').innerHTML = msg;
-            document.getElementById('modal').classList.remove('hidden');
-            window.modalCallback = callback;
-        }
-
-        function closeModal() {
-            document.getElementById('modal').classList.add('hidden');
-            if(window.modalCallback) window.modalCallback();
-        }
-
-        // Shatter Effect
-        function shatterEffect() {
-            document.getElementById('step2').classList.add('hidden');
-            document.getElementById('step2-greeting').classList.remove('hidden');
-            document.body.style.background = 'var(--bg-3)';
-            typeWriter("Let's play a little game. If you get these right, there's a surprise waiting.", "greet-text", () => {
-                document.getElementById('get-started').classList.remove('hidden');
+            showModal("<span style='color:red;'>HOW DARE YOU!</span>", () => {
+                container.classList.remove('shake');
             });
         }
 
-        function typeWriter(text, elementId, callback, speed = 40) {
+        function shatterTransition() {
+            const step2 = document.getElementById('step2');
+            step2.classList.add('shatter');
+            setTimeout(() => {
+                step2.classList.add('hidden');
+                document.getElementById('step2-greeting').classList.remove('hidden');
+                document.body.style.background = 'var(--bg-3)';
+                typeWriter("Let's play a little game. If you get these right, there's a surprise waiting.", "greet-text", () => {
+                    document.getElementById('get-started').classList.remove('hidden');
+                });
+            }, 800);
+        }
+
+        function typeWriter(text, elementId, callback, speed = 35) {
             let i = 0;
             const el = document.getElementById(elementId);
             el.innerHTML = "";
@@ -230,12 +214,10 @@
             type();
         }
 
-        // Quiz Logic
-        let currentQ = 0;
         const questions = [
             { q: "The proposal date?", ops: ["Oct 7", "Oct 8", "Oct 9", "Oct 10"], ans: "Oct 9", 
-              wrong: (choice) => choice === "Oct 10" ? "Are you serious right now? One day off is still WRONG. Do better." : "Seriously? You’re lucky I don’t revoke the 'Yes' right now. Try again.",
-              right: "Close call. You live to see another day. That day changed everything." },
+              wrong: (c) => c === "Oct 10" ? "Are you serious right now? One day off is still WRONG. Do better." : "Seriously? You’re lucky I don’t revoke the 'Yes' right now. Try again.",
+              right: "Close call. You live to see another day. That day changed everything.", bg: 'var(--bg-2)' },
             { q: "Where was our first date?", ops: ["Movie night", "Dinner date", "Night street walking", "Coffee shop"], ans: "Night street walking",
               wrong: () => "Incorrect! It's like you weren't even there. Try again!",
               right: "Simple, quiet, and perfect. Better than any fancy dinner.", bg: 'var(--bg-3)' },
@@ -256,14 +238,15 @@
         function loadQuestion() {
             const q = questions[currentQ];
             document.getElementById('progress-bar').style.width = ((currentQ + 1) * 20) + "%";
-            if(q.bg) document.body.style.background = q.bg;
+            document.body.style.background = q.bg;
             document.getElementById('question-text').innerText = q.q;
             const area = document.getElementById('options-area');
             area.innerHTML = "";
 
             if(q.input) {
                 const input = document.createElement('input');
-                input.style = "width:100%; padding:10px; border-radius:10px; border:1px solid #ccc; margin-bottom:10px;";
+                input.style = "width:100%; padding:15px; border-radius:15px; border:2px solid #ddd; margin-bottom:15px; box-sizing:border-box;";
+                input.placeholder = "Type here...";
                 const btn = document.createElement('button');
                 btn.className = "btn-yes"; btn.innerText = "Submit";
                 btn.onclick = () => checkAnswer(input.value.toLowerCase());
@@ -281,20 +264,19 @@
         function checkAnswer(val) {
             const q = questions[currentQ];
             const isRight = q.input ? q.ans.includes(val) : (val === q.ans);
-            
             if(isRight) {
+                heartExplosion();
                 showModal(q.right, () => {
                     currentQ++;
                     if(currentQ < questions.length) loadQuestion();
-                    else showValentineQuestion();
+                    else showValentineQ();
                 });
             } else {
                 showModal(q.input ? q.wrong() : q.wrong(val));
             }
         }
 
-        // Question 5: Valentine
-        function showValentineQuestion() {
+        function showValentineQ() {
             document.body.style.background = 'var(--bg-1)';
             const area = document.getElementById('quiz-container');
             area.innerHTML = `
@@ -307,46 +289,65 @@
         function flee() {
             const b = document.getElementById('flee-no');
             b.style.position = "fixed";
-            b.style.left = Math.random() * 70 + 15 + "vw";
-            b.style.top = Math.random() * 70 + 15 + "vh";
+            b.style.left = Math.random() * 80 + 10 + "vw";
+            b.style.top = Math.random() * 80 + 10 + "vh";
         }
 
         function valentineTrap() {
-            showModal("Nice try! Error 404, you are mine and you are being my valentine. I'm not asking, I am telling. Click the other button.");
+            showModal("Nice try! Error 404, you are mine and you are being my valentine I'm not asking, i am telling click the other button.");
         }
 
         function valentineYes() {
+            confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
             showModal("The only correct answer! I knew you'd make the right choice. 😉", () => {
                 document.getElementById('quiz-container').classList.add('hidden');
                 document.getElementById('finale-msg').classList.remove('hidden');
                 typeWriter("I’m glad we’re on the same page. Thanks for being my person and for dealing with my mood swings. Looking forward to Ooty, 207, and everything else we have planned. Happy Valentine's Day, favorite. 🌹🫂👩‍❤️‍💋‍👨", "type-final", () => {
                     document.getElementById('gift-section').classList.remove('hidden');
-                }, 25);
+                }, 20);
             });
         }
 
         function cameraShutter() {
-            const flash = document.getElementById('flash');
-            flash.style.opacity = '1';
+            const f = document.getElementById('flash');
+            f.style.opacity = '1';
             setTimeout(() => {
-                flash.style.opacity = '0';
+                f.style.opacity = '0';
                 document.getElementById('finale-msg').classList.add('hidden');
                 document.getElementById('gallery-scroll').classList.remove('hidden');
+                document.body.style.overflow = 'auto';
+                revealOnScroll();
             }, 300);
         }
 
-        // Particle Effect for Yes
-        function startConfetti(el) {
-            for(let i=0; i<20; i++) {
-                const p = document.createElement('div');
-                p.innerHTML = '❤️'; p.style.position = 'absolute';
-                p.style.left = '50%'; p.style.top = '50%';
-                p.style.transform = `translate(${(Math.random()-0.5)*200}px, ${(Math.random()-0.5)*200}px)`;
-                p.style.transition = "all 1s ease";
-                el.appendChild(p);
-                setTimeout(() => p.remove(), 1000);
-            }
+        function showModal(msg, cb) {
+            document.getElementById('modal-msg').innerHTML = msg;
+            document.getElementById('modal').classList.add('show');
+            window.modalCb = cb;
         }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+            if(window.modalCb) window.modalCb();
+        }
+
+        function heartExplosion() {
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#ff0a54', '#ff477e', '#ff7096'] });
+        }
+
+        function revealOnScroll() {
+            const imgs = document.querySelectorAll('.scroll-img');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+            }, { threshold: 0.2 });
+            imgs.forEach(img => observer.observe(img));
+        }
+
+        setInterval(() => {
+            const h = document.createElement('div'); h.innerHTML = '❤️'; h.className = 'heart';
+            h.style.left = Math.random() * 100 + 'vw'; h.style.animationDuration = (Math.random()*2+3)+'s';
+            document.body.appendChild(h); setTimeout(()=>h.remove(), 5000);
+        }, 600);
     </script>
 </body>
 </html>
